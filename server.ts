@@ -750,23 +750,36 @@ async function startServer() {
     }
   });
 
-  if (!isProd) {
-    const vite = await createViteServer({
-      server: { middlewareMode: true },
-      appType: 'spa',
-    });
-    app.use(vite.middlewares);
-  } else {
-    const distPath = path.resolve(__dirname, 'dist');
-    app.use(express.static(distPath));
-    app.get('*', (_req: Request, res: Response) => {
-      res.sendFile(path.join(distPath, 'index.html'));
-    });
+  if (!process.env.VERCEL) {
+    if (!isProd) {
+      const vite = await createViteServer({
+        server: { middlewareMode: true },
+        appType: 'spa',
+      });
+      app.use(vite.middlewares);
+    } else {
+      const distPath = path.resolve(__dirname, 'dist');
+      app.use(express.static(distPath));
+      app.get('*', (_req: Request, res: Response) => {
+        res.sendFile(path.join(distPath, 'index.html'));
+      });
+    }
   }
 
-  app.listen(PORT, '0.0.0.0', () => {
-    console.log(`solvexAI server listening on http://0.0.0.0:${PORT}`);
-  });
+  return app;
 }
 
-startServer();
+export const appPromise = startServer();
+
+if (!process.env.VERCEL) {
+  void appPromise
+    .then((app) => {
+      app.listen(PORT, '0.0.0.0', () => {
+        console.log(`solvexAI server listening on http://0.0.0.0:${PORT}`);
+      });
+    })
+    .catch((err: unknown) => {
+      console.error('Failed to start solvexAI server:', err);
+      process.exitCode = 1;
+    });
+}
