@@ -752,7 +752,19 @@ async function submitQuestion(rawPrompt) {
       }),
     });
 
-    const data = await res.json();
+    const responseText = await res.text();
+    let data;
+    try {
+      data = JSON.parse(responseText);
+    } catch {
+      const detail = responseText.replace(/\s+/g, ' ').trim().slice(0, 180);
+      throw new Error(
+        `Server mengirim respons non-JSON (HTTP ${res.status})${
+          detail ? `: ${detail}` : ''
+        }. Periksa Function Logs di Vercel.`
+      );
+    }
+
     if (!res.ok) {
       throw new Error(data.error || 'Terjadi kesalahan saat menghubungi server verifikasi.');
     }
