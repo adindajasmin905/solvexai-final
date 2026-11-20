@@ -1,0 +1,6 @@
+{
+  "name": "solvexAI",
+  "description": "Chatbot riset akurat dengan ringkasan terperinci, verifikasi sumber terpercaya, dan tautan langsung ke dokumen penelitian asli.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

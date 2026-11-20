@@ -1,0 +1,490 @@
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>solvexAI — Asisten Riset &amp; Verifikasi Sumber Asli</title>
+    <meta
+      name="description"
+      content="Chatbot riset akurat dengan ringkasan terperinci, verifikasi sumber terpercaya, dan tautan langsung ke dokumen penelitian asli."
+    />
+    <meta property="og:title" content="solvexAI — Asisten Riset &amp; Verifikasi Sumber Asli" />
+    <meta
+      property="og:description"
+      content="Chatbot riset akurat dengan ringkasan terperinci, verifikasi sumber terpercaya, dan tautan langsung ke dokumen penelitian asli."
+    />
+    <meta property="og:type" content="website" />
+    <meta name="twitter:card" content="summary_large_image" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400..700;1,9..40,400..600&family=JetBrains+Mono:wght@400;500&family=Plus+Jakarta+Sans:wght@500;600;700&display=swap"
+      rel="stylesheet"
+    />
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            fontFamily: {
+              display: ['"Plus Jakarta Sans"', 'system-ui', 'sans-serif'],
+              sans: ['"DM Sans"', 'system-ui', 'sans-serif'],
+              mono: ['"JetBrains Mono"', 'monospace'],
+            },
+          },
+        },
+      };
+    </script>
+
+    <style>
+      @media (prefers-reduced-motion: reduce) {
+        *, *::before, *::after {
+          animation-duration: 0.01ms !important;
+          transition-duration: 0.01ms !important;
+          scroll-behavior: auto !important;
+        }
+      }
+      .tabular-nums {
+        font-variant-numeric: tabular-nums;
+      }
+      .prose-answer h2,
+      .prose-answer h3 {
+        font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+        color: #0f172a;
+        font-weight: 600;
+        letter-spacing: -0.01em;
+        margin-top: 1.35rem;
+        margin-bottom: 0.5rem;
+      }
+      .prose-answer h2 {
+        font-size: 1.0625rem;
+        line-height: 1.4;
+      }
+      .prose-answer h3 {
+        font-size: 0.95rem;
+        line-height: 1.4;
+      }
+      .prose-answer p {
+        margin-bottom: 0.85rem;
+        line-height: 1.7;
+        color: #1e293b;
+      }
+      .prose-answer ul,
+      .prose-answer ol {
+        margin-bottom: 0.9rem;
+        padding-left: 1.35rem;
+        color: #1e293b;
+      }
+      .prose-answer ul {
+        list-style-type: disc;
+      }
+      .prose-answer ol {
+        list-style-type: decimal;
+      }
+      .prose-answer li {
+        margin-bottom: 0.4rem;
+        line-height: 1.65;
+      }
+      .prose-answer strong {
+        color: #0f172a;
+        font-weight: 600;
+      }
+      .prose-answer code {
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 0.84em;
+        background-color: #f1f5f9;
+        color: #0f172a;
+        padding: 0.12rem 0.35rem;
+        border-radius: 0.25rem;
+      }
+      .prose-answer pre {
+        background-color: #0f172a;
+        color: #f8fafc;
+        padding: 0.9rem 1rem;
+        border-radius: 0.5rem;
+        overflow-x: auto;
+        margin-bottom: 1rem;
+        font-size: 0.82rem;
+        line-height: 1.55;
+      }
+      .prose-answer pre code {
+        background: transparent;
+        color: inherit;
+        padding: 0;
+      }
+      .prose-answer blockquote {
+        border: 1px solid #e2e8f0;
+        background-color: #f8fafc;
+        border-radius: 0.5rem;
+        padding: 0.75rem 1rem;
+        margin-bottom: 0.9rem;
+        color: #334155;
+      }
+      .prose-answer table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-bottom: 1rem;
+        font-size: 0.875rem;
+      }
+      .prose-answer th,
+      .prose-answer td {
+        border-bottom: 1px solid #e2e8f0;
+        padding: 0.55rem 0.75rem;
+        text-align: left;
+        vertical-align: top;
+      }
+      .prose-answer th {
+        font-weight: 600;
+        color: #0f172a;
+        background-color: #f8fafc;
+      }
+    </style>
+  </head>
+  <body class="bg-slate-50 text-slate-900 font-sans antialiased selection:bg-blue-100 selection:text-blue-900">
+    <!-- Top Bar Contract: 3 zones separated by gap-8 -->
+    <header class="sticky top-0 z-30 bg-white border-b border-slate-200">
+      <div class="max-w-[1440px] mx-auto px-4 sm:px-6 h-16 flex items-center justify-between gap-8">
+        <!-- Zone 1: Single-element Brand Wordmark -->
+        <a
+          href="#ruang-riset"
+          id="brand-home-link"
+          class="font-display text-xl font-bold tracking-tight text-slate-900 whitespace-nowrap shrink-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-700 rounded"
+        >
+          solvexAI
+        </a>
+
+        <!-- Zone 2: Clean Single-Line Nav Links -->
+        <nav aria-label="Navigasi utama" class="hidden md:flex items-center gap-7 text-sm font-medium">
+          <button
+            type="button"
+            data-view-tab="workspace"
+            class="nav-tab py-1 text-slate-900 border-b-2 border-blue-700 transition-colors whitespace-nowrap shrink-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-700"
+          >
+            Ruang Riset
+          </button>
+          <button
+            type="button"
+            data-view-tab="history"
+            class="nav-tab py-1 text-slate-600 hover:text-slate-900 border-b-2 border-transparent transition-colors whitespace-nowrap shrink-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-700"
+          >
+            Riwayat Sesi
+          </button>
+          <button
+            type="button"
+            data-view-tab="methodology"
+            class="nav-tab py-1 text-slate-600 hover:text-slate-900 border-b-2 border-transparent transition-colors whitespace-nowrap shrink-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-700"
+          >
+            Metodologi Verifikasi
+          </button>
+        </nav>
+
+        <!-- Zone 3: Single Primary Action -->
+        <div class="flex items-center gap-3 shrink-0">
+          <button
+            type="button"
+            id="btn-new-session"
+            class="px-4 py-2 text-xs sm:text-sm font-medium text-white bg-slate-900 hover:bg-slate-800 rounded-lg transition-colors whitespace-nowrap shrink-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-700 focus-visible:ring-offset-2"
+          >
+            Sesi Baru
+          </button>
+        </div>
+      </div>
+
+      <!-- Mobile View Switcher (kept compact to respect 15% mobile sticky cap) -->
+      <div class="md:hidden border-t border-slate-100 px-4 py-2 flex items-center justify-between gap-2 bg-white">
+        <div class="flex items-center gap-4 text-xs font-medium overflow-x-auto">
+          <button type="button" data-view-tab="workspace" class="nav-tab-mobile text-blue-700 font-semibold whitespace-nowrap shrink-0">
+            Ruang Riset
+          </button>
+          <button type="button" data-view-tab="history" class="nav-tab-mobile text-slate-600 whitespace-nowrap shrink-0">
+            Riwayat Sesi
+          </button>
+          <button type="button" data-view-tab="methodology" class="nav-tab-mobile text-slate-600 whitespace-nowrap shrink-0">
+            Metodologi
+          </button>
+        </div>
+        <button
+          type="button"
+          id="btn-mobile-sources"
+          class="text-xs font-medium text-blue-700 hover:text-blue-800 whitespace-nowrap shrink-0"
+        >
+          Lihat Referensi (<span id="mobile-source-count" class="tabular-nums">0</span>)
+        </button>
+      </div>
+    </header>
+
+    <!-- VIEW 1: WORKSPACE -->
+    <main id="view-workspace" class="max-w-[1440px] mx-auto">
+      <div class="lg:grid lg:grid-cols-12 min-h-[calc(100vh-4rem)]">
+        <!-- Left Column: Dialogue Stream & Composer -->
+        <section
+          aria-label="Percakapan riset solvexAI"
+          class="lg:col-span-7 xl:col-span-8 flex flex-col bg-white min-h-[calc(100vh-6.5rem)] lg:min-h-[calc(100vh-4rem)]"
+        >
+          <!-- Scrollable Chat Messages Area -->
+          <div id="chat-scroll-container" class="flex-1 overflow-y-auto px-4 sm:px-8 py-6 sm:py-8">
+            <div class="max-w-3xl mx-auto">
+              <!-- Welcome Empty State -->
+              <div id="empty-state" class="py-4 sm:py-8">
+                <p class="text-xs font-medium text-blue-700 mb-3">
+                  Asisten Pengetahuan Terverifikasi · Penelusuran Langsung &amp; Literatur Ilmiah
+                </p>
+                <h1
+                  class="font-display text-2xl sm:text-4xl font-bold tracking-tight text-slate-900 mb-4"
+                  style="text-wrap: balance;"
+                >
+                  Jawaban Akurat Berbasis Dokumen Penelitian Asli
+                </h1>
+                <p class="text-base text-slate-600 leading-relaxed mb-8 max-w-2xl">
+                  Ajukan pertanyaan ilmiah, medis, teknologi, ekonomi, sejarah, atau kebijakan publik.
+                  solvexAI menyusun ringkasan terperinci dari sumber tepercaya dan menautkan makalah
+                  penelitian asli beserta DOI yang dapat diperiksa langsung.
+                </p>
+
+                <!-- 4 Example Research Starters -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <button
+                    type="button"
+                    data-sample-prompt="Bagaimana mekanisme kerja teknologi pengeditan gen CRISPR-Cas9 dan apa temuan uji klinis terbarunya untuk terapi penyakit sel sabit?"
+                    class="sample-prompt-btn text-left p-4 rounded-xl border border-slate-200 bg-white hover:border-slate-300 hover:bg-slate-50 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-700"
+                  >
+                    <div class="text-xs text-slate-500 mb-1.5">Biomedis · Genetika Klinis</div>
+                    <div class="text-sm font-semibold text-slate-900 leading-snug">
+                      Mekanisme CRISPR-Cas9 dan hasil uji klinis terapi penyakit sel sabit
+                    </div>
+                  </button>
+
+                  <button
+                    type="button"
+                    data-sample-prompt="Apa penyebab utama pemanasan lautan global menurut laporan IPCC terbaru dan bagaimana dampaknya terhadap sirkulasi AMOC?"
+                    class="sample-prompt-btn text-left p-4 rounded-xl border border-slate-200 bg-white hover:border-slate-300 hover:bg-slate-50 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-700"
+                  >
+                    <div class="text-xs text-slate-500 mb-1.5">Sains Iklim · Oseanografi</div>
+                    <div class="text-sm font-semibold text-slate-900 leading-snug">
+                      Pemanasan lautan global dan stabilitas sirkulasi arus Atlantik (AMOC)
+                    </div>
+                  </button>
+
+                  <button
+                    type="button"
+                    data-sample-prompt="Bagaimana efisiensi sel surya tandem perovskit-silikon dibandingkan sel silikon konvensional berdasarkan publikasi NREL dan jurnal energi terbaru?"
+                    class="sample-prompt-btn text-left p-4 rounded-xl border border-slate-200 bg-white hover:border-slate-300 hover:bg-slate-50 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-700"
+                  >
+                    <div class="text-xs text-slate-500 mb-1.5">Fisika Material · Energi Terbarukan</div>
+                    <div class="text-sm font-semibold text-slate-900 leading-snug">
+                      Efisiensi dan stabilitas sel surya tandem perovskit-silikon terkini
+                    </div>
+                  </button>
+
+                  <button
+                    type="button"
+                    data-sample-prompt="Apa bukti empiris mengenai efektivitas kebijakan pajak karbon dalam menurunkan emisi sektor industri di negara-negara Nordik?"
+                    class="sample-prompt-btn text-left p-4 rounded-xl border border-slate-200 bg-white hover:border-slate-300 hover:bg-slate-50 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-700"
+                  >
+                    <div class="text-xs text-slate-500 mb-1.5">Ekonomi Lingkungan · Kebijakan Publik</div>
+                    <div class="text-sm font-semibold text-slate-900 leading-snug">
+                      Evaluasi empiris efektivitas pajak karbon terhadap emisi industri Nordik
+                    </div>
+                  </button>
+                </div>
+              </div>
+
+              <!-- Dynamic Conversation Thread -->
+              <div id="messages-list" class="space-y-8 hidden"></div>
+            </div>
+          </div>
+
+          <!-- Sticky Bottom Composer -->
+          <div class="border-t border-slate-200 bg-white px-4 sm:px-8 py-4">
+            <div class="max-w-3xl mx-auto">
+              <!-- Depth Mode Selector + Helper Hint -->
+              <div class="flex flex-wrap items-center justify-between gap-3 mb-3">
+                <div
+                  role="group"
+                  aria-label="Kedalaman analisis"
+                  class="inline-flex items-center p-1 bg-slate-100 rounded-lg"
+                >
+                  <button
+                    type="button"
+                    id="mode-standard"
+                    data-depth="standard"
+                    class="depth-btn px-3 py-1.5 text-xs font-medium rounded-md bg-white text-slate-900 shadow-sm transition-colors whitespace-nowrap shrink-0"
+                  >
+                    Ringkas &amp; Terverifikasi
+                  </button>
+                  <button
+                    type="button"
+                    id="mode-deep"
+                    data-depth="deep"
+                    class="depth-btn px-3 py-1.5 text-xs font-medium rounded-md text-slate-600 hover:text-slate-900 transition-colors whitespace-nowrap shrink-0"
+                  >
+                    Analisis Riset Mendalam
+                  </button>
+                </div>
+                <span class="text-xs text-slate-500 hidden sm:inline">
+                  Tekan Enter untuk mengirim · Shift + Enter untuk baris baru
+                </span>
+              </div>
+
+              <!-- Input Form -->
+              <form id="chat-form" class="flex items-end gap-3">
+                <div class="flex-1">
+                  <label for="question-input" class="sr-only">Tulis pertanyaan Anda</label>
+                  <textarea
+                    id="question-input"
+                    rows="2"
+                    placeholder="Ajukan pertanyaan untuk diverifikasi beserta dokumen penelitian aslinya..."
+                    class="w-full resize-none rounded-xl border border-slate-300 bg-white px-4 py-3 text-sm sm:text-base text-slate-900 placeholder:text-slate-400 focus:border-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-700/15 transition-colors max-h-44"
+                  ></textarea>
+                </div>
+                <button
+                  type="submit"
+                  id="btn-submit"
+                  class="h-11 px-5 rounded-xl bg-blue-700 hover:bg-blue-800 disabled:bg-slate-300 disabled:cursor-not-allowed text-white text-sm font-medium transition-colors whitespace-nowrap shrink-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-700 focus-visible:ring-offset-2"
+                >
+                  Kirim
+                </button>
+              </form>
+            </div>
+          </div>
+        </section>
+
+        <!-- Right Column: Original Research Documents & Grounded Web Sources -->
+        <aside
+          id="sources-panel"
+          aria-label="Referensi dan dokumen penelitian asli"
+          class="hidden lg:flex lg:col-span-5 xl:col-span-4 flex-col border-l border-slate-200 bg-slate-50 lg:h-[calc(100vh-4rem)] lg:sticky lg:top-16"
+        >
+          <div class="px-5 py-4 border-b border-slate-200 bg-white flex items-center justify-between gap-3">
+            <div>
+              <h2 class="font-display text-sm font-semibold text-slate-900">
+                Referensi &amp; Dokumen Asli
+              </h2>
+              <p id="sources-panel-subtitle" class="text-xs text-slate-500 mt-0.5">
+                Menampilkan tautan langsung dari jawaban terpilih
+              </p>
+            </div>
+            <button
+              type="button"
+              id="btn-close-mobile-sources"
+              class="lg:hidden px-3 py-1.5 text-xs font-medium text-slate-700 border border-slate-200 rounded-lg hover:bg-slate-100 whitespace-nowrap shrink-0"
+            >
+              Tutup
+            </button>
+          </div>
+
+          <!-- Source Type Filter Tabs -->
+          <div class="px-5 pt-3 pb-2 bg-slate-50 border-b border-slate-200">
+            <div class="flex items-center gap-1 p-1 bg-slate-200/70 rounded-lg">
+              <button
+                type="button"
+                data-source-filter="all"
+                class="source-filter-btn flex-1 px-2.5 py-1.5 text-xs font-medium rounded-md bg-white text-slate-900 shadow-sm transition-colors whitespace-nowrap"
+              >
+                Semua (<span id="count-all" class="tabular-nums">0</span>)
+              </button>
+              <button
+                type="button"
+                data-source-filter="papers"
+                class="source-filter-btn flex-1 px-2.5 py-1.5 text-xs font-medium rounded-md text-slate-600 hover:text-slate-900 transition-colors whitespace-nowrap"
+              >
+                Dokumen Riset (<span id="count-papers" class="tabular-nums">0</span>)
+              </button>
+              <button
+                type="button"
+                data-source-filter="web"
+                class="source-filter-btn flex-1 px-2.5 py-1.5 text-xs font-medium rounded-md text-slate-600 hover:text-slate-900 transition-colors whitespace-nowrap"
+              >
+                Sumber Web (<span id="count-web" class="tabular-nums">0</span>)
+              </button>
+            </div>
+          </div>
+
+          <!-- Scrollable Evidence List -->
+          <div id="sources-list-container" class="flex-1 overflow-y-auto px-5 py-5 space-y-5">
+            <div id="sources-empty-state" class="py-12 text-center">
+              <p class="text-sm font-medium text-slate-700 mb-1">
+                Belum ada dokumen yang dimuat
+              </p>
+              <p class="text-xs text-slate-500 max-w-xs mx-auto leading-relaxed">
+                Kirim pertanyaan di panel kiri untuk melihat tautan makalah penelitian asli (DOI / PDF)
+                serta sumber rujukan terverifikasi di sini.
+              </p>
+            </div>
+          </div>
+        </aside>
+      </div>
+    </main>
+
+    <!-- VIEW 2: HISTORY -->
+    <section id="view-history" class="hidden max-w-4xl mx-auto px-4 sm:px-6 py-10">
+      <div class="flex flex-wrap items-center justify-between gap-4 pb-6 border-b border-slate-200">
+        <div>
+          <h1 class="font-display text-2xl font-bold text-slate-900">Riwayat Sesi Riset</h1>
+          <p class="text-sm text-slate-600 mt-1">
+            Sesi percakapan beserta referensi dokumen asli tersimpan secara lokal di peramban Anda.
+          </p>
+        </div>
+        <button
+          type="button"
+          id="btn-clear-history"
+          class="px-4 py-2 text-xs font-medium text-slate-700 border border-slate-300 bg-white hover:bg-slate-100 rounded-lg transition-colors whitespace-nowrap shrink-0"
+        >
+          Hapus Semua Riwayat
+        </button>
+      </div>
+      <div id="history-list" class="mt-6 space-y-3"></div>
+    </section>
+
+    <!-- VIEW 3: METHODOLOGY -->
+    <section id="view-methodology" class="hidden max-w-3xl mx-auto px-4 sm:px-6 py-10">
+      <div class="pb-6 border-b border-slate-200">
+        <p class="text-xs font-medium text-blue-700 mb-2">Transparansi &amp; Verifikasi Data</p>
+        <h1 class="font-display text-2xl sm:text-3xl font-bold text-slate-900">
+          Bagaimana solvexAI Menjaga Akurasi Jawaban
+        </h1>
+      </div>
+
+      <div class="mt-8 space-y-8 text-slate-700 leading-relaxed">
+        <div>
+          <h2 class="font-display text-lg font-semibold text-slate-900 mb-2">
+            01. Penelusuran Web Real-Time (Search Grounding)
+          </h2>
+          <p class="text-sm sm:text-base">
+            Setiap pertanyaan diverifikasi terlebih dahulu melalui penelusuran web langsung sebelum
+            ringkasan disusun. Model tidak mengandalkan ingatan statis semata untuk angka terbaru,
+            regulasi, atau temuan ilmiah mutakhir.
+          </p>
+        </div>
+
+        <div class="pt-6 border-t border-slate-200">
+          <h2 class="font-display text-lg font-semibold text-slate-900 mb-2">
+            02. Pengambilan Dokumen Penelitian Asli (OpenAlex &amp; Crossref DOI)
+          </h2>
+          <p class="text-sm sm:text-base">
+            Secara paralel, server solvexAI menelusuri basis data ilmiah terbuka OpenAlex dan Crossref
+            untuk mengambil metadata artikel jurnal asli: judul resmi, daftar penulis, tahun terbit,
+            nama jurnal, jumlah sitasi, cuplikan abstrak asli, serta tautan permanen DOI dan PDF
+            akses terbuka bila tersedia.
+          </p>
+        </div>
+
+        <div class="pt-6 border-t border-slate-200">
+          <h2 class="font-display text-lg font-semibold text-slate-900 mb-2">
+            03. Larangan Fabrikasi &amp; Transparansi Batasan
+          </h2>
+          <p class="text-sm sm:text-base">
+            Sistem diinstruksikan secara ketat untuk tidak mengarang nomor DOI, tautan URL, angka
+            statistik, maupun kutipan studi. Apabila bukti ilmiah masih bersifat awal atau terdapat
+            perbedaan konsensus di antara peneliti, solvexAI menyatakannya secara eksplisit pada bagian
+            Catatan Verifikasi.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <script type="module" src="/src/app.js"></script>
+  </body>
+</html>
